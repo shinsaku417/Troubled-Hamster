@@ -21,6 +21,7 @@ var AppStore = assign({}, EventEmitter.prototype, {
 
   getSelection: function(){
     _selection['libraries'] = ['underscore', 'backbone', 'node'];
+    _selection.libraryData = [];
     return _selection;
   },
 

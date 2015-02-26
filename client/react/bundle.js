@@ -19,10 +19,45 @@ var App = React.createClass({displayName: "App",
       // method: method
   },
 
+  componentDidMount: function() {
+    var libraryData = [];
+    var libraries = this.state.libraries;
+    var len = libraries.length;
+    var context = this;
+    // this.setState({
+    //   library: libraries,
+    //   libraryData: libraryData
+    // })
+    libraries.forEach(function(library, index) {
+      $.ajax({
+        url: 'http://localhost:3000/test',
+        dataType: 'json',
+        success: function(data) {
+          console.log('successfully fetched data for library ', library);
+          libraryData.push({
+            name: library,
+            data: data
+          });
+          if (index === len - 1) {
+            if (context.isMounted()) {
+              context.setState({
+                libraries: libraries,
+                libraryData: libraryData
+              });
+            }
+          }
+        },
+        error: function(xhr, status, err) {
+          console.error('error getting data for library ', library);
+        }
+      });
+    });
+  },
+
   render: function(){
     return (
-      React.createElement("div", {className: "app"},
-        React.createElement(Sidebar, {libraries: this.state.libraries}),
+      React.createElement("div", {className: "app"}, 
+        React.createElement(Sidebar, {libraryData: this.state.libraryData}), 
         React.createElement(Documentation, {library: this.state.library})
       )
     );
@@ -61,9 +96,9 @@ var Examples = require('./Examples');
 var Resources = React.createClass({displayName: "Resources",
   render: function(){
     return (
-      React.createElement("div", {className: "resources"},
-        React.createElement("h1", null, this.props.method),
-        React.createElement(StackOverflow, {method: this.props.method}),
+      React.createElement("div", {className: "resources"}, 
+        React.createElement("h1", null, this.props.method), 
+        React.createElement(StackOverflow, {method: this.props.method}), 
         React.createElement(Examples, {method: this.props.method})
       )
     );
@@ -73,17 +108,35 @@ var Resources = React.createClass({displayName: "Resources",
 module.exports = Resources;
 
 },{"./Examples":3,"./StackOverflow":6}],5:[function(require,module,exports){
+var Library = React.createClass({displayName: "Library",
+  expand: function() {
+    var types = this.props.library.data.types;
+    for (var i = 0; i < types.length; i++) {
+      console.log(types[i]);
+    }
+  },
+  render: function() {
+    console.log(this.props.library);
+    return (
+      React.createElement("div", {className: "library", onClick: this.expand}, 
+        this.props.library.name
+      )
+    );
+  }
+});
+
 var Sidebar = React.createClass({displayName: "Sidebar",
   render: function(){
-    var libraryNodes = this.props.libraries.map(function(library){
+    var libraryNodes = this.props.libraryData.map(function(library){
       return (
-        React.createElement("li", null, library)
+        // <li>{library}</li>
+        React.createElement(Library, {library: library})
       );
     });
     return (
-      React.createElement("div", {className: "Sidebar"},
-        React.createElement("h1", null, "Libraries"),
-        React.createElement("ul", {className: "LibraryList"},
+      React.createElement("div", {className: "Sidebar"}, 
+        React.createElement("h1", null, "Libraries"), 
+        React.createElement("ul", {className: "LibraryList"}, 
           libraryNodes
         )
       )
@@ -92,6 +145,7 @@ var Sidebar = React.createClass({displayName: "Sidebar",
 });
 
 module.exports = Sidebar;
+
 
 },{}],6:[function(require,module,exports){
 var StackOverflow = React.createClass({displayName: "StackOverflow",
@@ -118,7 +172,7 @@ var Dispatcher = require('./dispatcher.js');
 var assign = require('object-assign');
 
 var AppDispatcher = assign({}, Dispatcher.prototype, {
-
+  
   handleViewAction: function(action) {
     this.dispatch({
       source: 'VIEW_ACTION',
@@ -217,6 +271,7 @@ var AppStore = assign({}, EventEmitter.prototype, {
 
   getSelection: function(){
     _selection['libraries'] = ['underscore', 'backbone', 'node'];
+    _selection.libraryData = [];
     return _selection;
   },
 
@@ -251,6 +306,7 @@ AppDispatcher.register(function(action) {
 });
 
 module.exports = AppStore;
+
 
 },{"../constants/constants":7,"../dispatcher/AppDispatcher":8,"events":160,"object-assign":13}],12:[function(require,module,exports){
 (function (process,global){

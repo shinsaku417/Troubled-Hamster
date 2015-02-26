@@ -21,8 +21,8 @@ var App = React.createClass({displayName: "App",
 
   render: function(){
     return (
-      React.createElement("div", {className: "app"}, 
-        React.createElement(Sidebar, {libraries: this.state.libraries}), 
+      React.createElement("div", {className: "app"},
+        React.createElement(Sidebar, {libraries: this.state.libraries}),
         React.createElement(Documentation, {library: this.state.library})
       )
     );
@@ -61,9 +61,9 @@ var Examples = require('./Examples');
 var Resources = React.createClass({displayName: "Resources",
   render: function(){
     return (
-      React.createElement("div", {className: "resources"}, 
-        React.createElement("h1", null, this.props.method), 
-        React.createElement(StackOverflow, {method: this.props.method}), 
+      React.createElement("div", {className: "resources"},
+        React.createElement("h1", null, this.props.method),
+        React.createElement(StackOverflow, {method: this.props.method}),
         React.createElement(Examples, {method: this.props.method})
       )
     );
@@ -81,9 +81,9 @@ var Sidebar = React.createClass({displayName: "Sidebar",
       );
     });
     return (
-      React.createElement("div", {className: "Sidebar"}, 
-        React.createElement("h1", null, "Libraries"), 
-        React.createElement("ul", {className: "LibraryList"}, 
+      React.createElement("div", {className: "Sidebar"},
+        React.createElement("h1", null, "Libraries"),
+        React.createElement("ul", {className: "LibraryList"},
           libraryNodes
         )
       )
@@ -118,7 +118,7 @@ var Dispatcher = require('./dispatcher.js');
 var assign = require('object-assign');
 
 var AppDispatcher = assign({}, Dispatcher.prototype, {
-  
+
   handleViewAction: function(action) {
     this.dispatch({
       source: 'VIEW_ACTION',
@@ -181,7 +181,7 @@ module.exports = Dispatcher;
 
 },{"es6-promise":12,"object-assign":13}],10:[function(require,module,exports){
 $(document).ready(function() {
-  
+
   var React = require('react');
   var App = require('./components/App');
 
